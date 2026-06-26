@@ -30,6 +30,8 @@ class ChangeTextTest {
         context.startActivity(intent)
         device.wait(Until.hasObject(By.pkg(packageName)), TIMEOUT)
     }
+    private fun findObjectById(id: String) =
+        device.wait(Until.findObject(By.res(MODEL_PACKAGE, id)), TIMEOUT)
 
     @Before
     fun beforeEachTest() {
@@ -56,11 +58,12 @@ class ChangeTextTest {
         val packageName = MODEL_PACKAGE
         waitForPackage(packageName)
 
-        device.findObject(By.res(packageName, "userInput")).text = textToSet
-        device.findObject(By.res(packageName, "buttonChange")).click()
+        findObjectById("userInput").text = textToSet
+        findObjectById("buttonChange").click()
 
-        val result = device.findObject(By.res(packageName, "textToBeChanged")).text
-        assertEquals(result, textToSet)
+        val result = findObjectById("textToBeChanged").text
+
+        assertEquals(textToSet, result)
     }
 
     @Test
@@ -68,12 +71,12 @@ class ChangeTextTest {
         val packageName = MODEL_PACKAGE
         waitForPackage(packageName)
 
-        val textBefore = device.findObject(By.res(packageName, "textToBeChanged")).text
+        val textBefore = findObjectById("textToBeChanged").text
 
-        device.findObject(By.res(packageName, "userInput")).text = "   "
-        device.findObject(By.res(packageName, "buttonChange")).click()
+        findObjectById("userInput").text = "   "
+        findObjectById("buttonChange").click()
 
-        val textAfter = device.findObject(By.res(packageName, "textToBeChanged")).text
+        val textAfter = findObjectById("textToBeChanged").text
 
         assertEquals(textBefore, textAfter)
     }
@@ -85,15 +88,10 @@ class ChangeTextTest {
 
         waitForPackage(packageName)
 
-        device.findObject(By.res(packageName, "userInput")).text = textToOpen
-        device.findObject(By.res(packageName, "buttonActivity")).click()
+        findObjectById("userInput").text = textToOpen
+        findObjectById("buttonActivity").click()
 
-        device.wait(
-            Until.hasObject(By.res(packageName, "text")),
-            TIMEOUT
-        )
-
-        val result = device.findObject(By.res(packageName, "text")).text
+        val result = findObjectById("text").text
 
         assertEquals(textToOpen, result)
     }
